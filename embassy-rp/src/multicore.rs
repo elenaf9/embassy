@@ -85,8 +85,8 @@ impl<const SIZE: usize> Stack<SIZE> {
 }
 
 #[cfg(feature = "rt")]
-#[interrupt]
-#[link_section = ".data.ram_func"]
+// #[interrupt]
+// #[link_section = ".data.ram_func"]
 unsafe fn SIO_IRQ_PROC1() {
     let sio = pac::SIO;
     // Clear IRQ
