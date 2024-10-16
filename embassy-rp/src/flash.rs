@@ -939,6 +939,7 @@ pub(crate) unsafe fn in_ram(operation: impl FnOnce()) -> Result<(), Error> {
     }
 
     // Make sure CORE1 is paused during the entire duration of the RAM function
+    #[cfg(feature = "core1-control")]
     crate::multicore::pause_core1();
 
     critical_section::with(|_| {
@@ -956,6 +957,7 @@ pub(crate) unsafe fn in_ram(operation: impl FnOnce()) -> Result<(), Error> {
     });
 
     // Resume CORE1 execution
+    #[cfg(feature = "core1-control")]
     crate::multicore::resume_core1();
     Ok(())
 }

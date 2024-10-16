@@ -53,8 +53,11 @@ use crate::interrupt::InterruptExt;
 use crate::peripherals::CORE1;
 use crate::{gpio, install_stack_guard, interrupt, pac};
 
+#[cfg(feature = "core1-control")]
 const PAUSE_TOKEN: u32 = 0xDEADBEEF;
+#[cfg(feature = "core1-control")]
 const RESUME_TOKEN: u32 = !0xDEADBEEF;
+
 static IS_CORE1_INIT: AtomicBool = AtomicBool::new(false);
 
 #[inline(always)]
@@ -84,7 +87,7 @@ impl<const SIZE: usize> Stack<SIZE> {
     }
 }
 
-#[cfg(all(feature = "rt", feature = "rp2040"))]
+#[cfg(all(feature = "rt", feature = "rp2040", feature = "core1-control"))]
 #[interrupt]
 #[link_section = ".data.ram_func"]
 unsafe fn SIO_IRQ_PROC1() {
@@ -109,7 +112,7 @@ unsafe fn SIO_IRQ_PROC1() {
     }
 }
 
-#[cfg(all(feature = "rt", feature = "_rp235x"))]
+#[cfg(all(feature = "rt", feature = "_rp235x", feature = "core1-control"))]
 #[interrupt]
 #[link_section = ".data.ram_func"]
 unsafe fn SIO_IRQ_FIFO() {
@@ -258,6 +261,7 @@ where
 }
 
 /// Pause execution on CORE1.
+#[cfg(feature = "core1-control")]
 pub fn pause_core1() {
     if IS_CORE1_INIT.load(Ordering::Acquire) {
         fifo_write(PAUSE_TOKEN);
@@ -267,6 +271,7 @@ pub fn pause_core1() {
 }
 
 /// Resume CORE1 execution.
+#[cfg(feature = "core1-control")]
 pub fn resume_core1() {
     if IS_CORE1_INIT.load(Ordering::Acquire) {
         fifo_write(RESUME_TOKEN);

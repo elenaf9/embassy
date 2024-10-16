@@ -107,6 +107,11 @@ _test = []
 ## program and other details.
 binary-info = ["rt", "dep:rp-binary-info", "rp-binary-info?/binary-info"]
 
+## Use FIFO queues between cores to pause and resume core 1 from core 0.
+## When the feature is enabled, the FIFO queues can't be used for user application 
+## logic because of conflicting interrupt handlers.
+core1-control = []
+
 [dependencies]
 embassy-sync = { version = "0.6.0"}
 embassy-time-driver = { version = "0.1", optional = true }
